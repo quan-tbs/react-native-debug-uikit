@@ -1,0 +1,17 @@
+{
+  "cxxNamespace": ["debugtoolkit"],
+  "ios": {
+    "iosModuleName": "DebugToolkit"
+  },
+  "android": {
+    "androidNamespace": ["debugtoolkit"],
+    "androidCxxLibName": "debugtoolkit"
+  },
+  "autolinking": {
+    "DebugToolkit": {
+      "swift": "DebugToolkit",
+      "kotlin": "DebugToolkit"
+    }
+  },
+  "ignorePaths": ["node_modules"]
+}
