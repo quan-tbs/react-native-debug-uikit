@@ -40,6 +40,8 @@
     "nitrogen": "nitrogen",
     "typecheck": "tsc",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
+    "format": "prettier --write \"src/**/*.{js,ts,tsx,json,md}\"",
+    "format:check": "prettier --check \"src/**/*.{js,ts,tsx,json,md}\"",
     "test": "jest",
     "release": "release-it --only-version"
   },
@@ -60,6 +62,9 @@
   "homepage": "https://github.com/quannh287/react-native-debug-toolkit#readme",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
+  },
+  "dependencies": {
+    "@legendapp/list": "^2.0.19"
   },
   "devDependencies": {
     "@commitlint/config-conventional": "^19.8.1",
