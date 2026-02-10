@@ -1,0 +1,57 @@
+---
+description: Styling conventions — theme (light/dark/system), useTheme, glassmorphism, design tokens
+globs: src/**/*.tsx, src/**/*.ts
+alwaysApply: false
+---
+
+# Styling: Theme, Glass, Design Tokens
+
+## Theme (Light / Dark / System)
+
+- **Luôn dùng `useTheme()`** cho UI trong debug overlay; không import tĩnh `import { colors } from '.../colors'` cho component render.
+- Lấy `const { colors, themeMode, setThemeMode } = useTheme()` và dùng `colors` cho mọi màu (background, text, border, semantic).
+- Component phải nằm trong cây có `ThemeProvider` (đã bọc bởi `DebugToolkitProvider` khi `enabled`).
+
+## Styles phụ thuộc theme
+
+- Style dùng `colors` **phải** tạo trong component với `useMemo` để đổi theme thì re-render đúng:
+  ```tsx
+  const { colors } = useTheme();
+  const styles = useMemo(
+    () =>
+      StyleSheet.create({
+        card: {
+          backgroundColor: colors.surface,
+          borderColor: colors.borderSubtle,
+        },
+        title: { color: colors.textPrimary },
+      }),
+    [colors]
+  );
+  ```
+- Không dùng `StyleSheet.create({ ... colors.xxx ... })` ở top-level module cho UI theme-aware.
+
+## Design tokens
+
+- **Màu**: chỉ từ `useTheme().colors` hoặc (khi không có context) `darkColors`/`lightColors` từ `common/theme/colors`. Không hardcode hex/rgba.
+  - Surface variants: `surfaceLight` (backward compat), `surfaceLightSubtle`, `surfaceLightMedium`, `surfaceLightStrong` cho glass effects.
+- **Khoảng cách**: dùng `spacing` từ `common/theme/spacing` (8pt: xs=4, sm=8, md=16, lg=24, xl=32, xxl=40, xxxl=48).
+- **Bo góc**: dùng `radius` từ `common/theme/radius` (sm=8, md=16, lg=20, xl=24, xxl=40). Panel glass dùng ít nhất `radius.xl`/`radius.xxl`.
+- **Chữ**: dùng `typography` từ `common/theme/typography` (display, displayLarge, title, subtitle, body, caption, captionSmall, button, mono, monoMd).
+- **Đổ bóng**: dùng `shadows` từ `common/theme/shadows` (glass, glassStrong, neon, subtle, glowGreen, glowBlue, glowPurple, glowPink, glowCyan).
+
+## Glassmorphism
+
+- Dùng `createGlassStyle(overrides?, colors?, variant?)`, `getGlassPanelBase(colors?, variant?)`, `createNeonGlow(color?, colors?)` từ `common/theme/glassmorphism`. Truyền `colors` từ `useTheme()` khi cần theme-aware.
+- Variants: `'subtle' | 'medium' | 'strong'` (default: `'medium'`).
+  - `subtle`: dùng `surfaceLightSubtle`, `borderSubtle` - cho overlay backgrounds.
+  - `medium`: dùng `surfaceLightMedium`, `borderSubtle` - cho cards (recommended).
+  - `strong`: dùng `surfaceLightStrong`, `borderLight` - cho buttons và interactive elements.
+- Panel chính: nền `colors.surface`, viền `colors.borderLight`/`colors.borderSubtle`, kết hợp `radius.xxl` và `shadows.glass`.
+- `GlassButton` hỗ trợ prop `glassVariant` để chọn glass style variant.
+
+## Shared components
+
+- Ưu tiên dùng component từ `common/components`: `GlassCard`, `GlassButton`, `GlassOverlay`, `StatusBadge`, `MethodBadge`, `IconSymbol`, `SearchInput`, `FilterTabs`, `TabBar`, `Divider`. Các component này đã dùng `useTheme()` nội bộ.
+- **Icons**: Dùng `ICONS` constants từ `IconSymbol` thay vì hardcode emoji. Available: `ICONS.SEARCH`, `ICONS.CLOSE`, `ICONS.SUN`, `ICONS.MOON`, `ICONS.SYSTEM`.
+- **GlassButton**: Dùng `typography.button` cho text (tự động), hỗ trợ `glassVariant` prop để chọn glass style intensity.
