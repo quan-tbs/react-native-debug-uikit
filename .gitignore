@@ -84,3 +84,10 @@ android/generated
 
 # React Native Nitro Modules
 nitrogen/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
